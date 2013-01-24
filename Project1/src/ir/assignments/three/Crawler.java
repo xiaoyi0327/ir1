@@ -1,8 +1,61 @@
 package ir.assignments.three;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.regex.Pattern;
 
-public class Crawler {
+import edu.uci.ics.crawler4j.crawler.Page;
+import edu.uci.ics.crawler4j.crawler.WebCrawler;
+import edu.uci.ics.crawler4j.parser.HtmlParseData;
+import edu.uci.ics.crawler4j.url.WebURL;
+
+public class Crawler extends WebCrawler {
+	 private final static Pattern FILTERS = Pattern.compile(".*(\\.(css|js|bmp|gif|jpe?g" + "|png|tiff?|mid|mp2|mp3|mp4"
+             + "|wav|avi|mov|mpeg|ram|m4v|pdf" + "|rm|smil|wmv|swf|wma|zip|rar|gz))$");
+
+/**
+* You should implement this function to specify whether the given url
+* should be crawled or not (based on your crawling logic).
+*/
+@Override
+public boolean shouldVisit(WebURL url) {
+     String href = url.getURL().toLowerCase();
+     return !FILTERS.matcher(href).matches() && href.startsWith("http://www.ics.uci.edu/");
+}
+
+/**
+* This function is called when a page is fetched and ready to be processed
+* by your program.
+*/
+@Override
+public void visit(Page page) {
+     int docid = page.getWebURL().getDocid();
+     String url = page.getWebURL().getURL();
+     String domain = page.getWebURL().getDomain();
+     String path = page.getWebURL().getPath();
+     String subDomain = page.getWebURL().getSubDomain();
+     String parentUrl = page.getWebURL().getParentUrl();
+
+     System.out.println("Docid: " + docid);
+     System.out.println("URL: " + url);
+     System.out.println("Domain: '" + domain + "'");
+     System.out.println("Sub-domain: '" + subDomain + "'");
+     System.out.println("Path: '" + path + "'");
+     System.out.println("Parent page: " + parentUrl);
+
+     if (page.getParseData() instanceof HtmlParseData) {
+             HtmlParseData htmlParseData = (HtmlParseData) page.getParseData();
+             String text = htmlParseData.getText();
+             String html = htmlParseData.getHtml();
+             List<WebURL> links = htmlParseData.getOutgoingUrls();
+
+             System.out.println("Text length: " + text.length());
+             System.out.println("Html length: " + html.length());
+             System.out.println("Number of outgoing links: " + links.size());
+     }
+
+     System.out.println("=============");
+}
 	/**
 	 * This method is for testing purposes only. It does not need to be used
 	 * to answer any of the questions in the assignment. However, it must
@@ -14,5 +67,13 @@ public class Crawler {
 	public static Collection<String> crawl(String seedURL) {
 		// TODO implement me
 		return null;
+	}
+	
+	public static void main(String[] args){
+		WebURL url = new WebURL();
+		url.setURL("http://www.ics.uci.edu/");
+		Page page = new Page(url);
+		Crawler crawler = new Crawler();
+		crawler.visit(page);
 	}
 }
