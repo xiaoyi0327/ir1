@@ -30,24 +30,26 @@ import edu.uci.ics.crawler4j.robotstxt.RobotstxtServer;
 public class BasicCrawlController {
 
         public static void main(String[] args) throws Exception {
-                if (args.length != 2) {
+        	String folderRoot = "/data/crawl/root";
+        	String crawlerNumbers = "1";
+                /*if (args.length != 2) {
                         System.out.println("Needed parameters: ");
                         System.out.println("\t rootFolder (it will contain intermediate crawl data)");
                         System.out.println("\t numberOfCralwers (number of concurrent threads)");
                         return;
-                }
+                }*/
 
                 /*
                  * crawlStorageFolder is a folder where intermediate crawl data is
                  * stored.
                  */
-                String crawlStorageFolder = args[0];
+                String crawlStorageFolder = folderRoot;
 
                 /*
                  * numberOfCrawlers shows the number of concurrent threads that should
                  * be initiated for crawling.
                  */
-                int numberOfCrawlers = Integer.parseInt(args[1]);
+                int numberOfCrawlers = Integer.parseInt(crawlerNumbers);
 
                 CrawlConfig config = new CrawlConfig();
 
@@ -57,7 +59,7 @@ public class BasicCrawlController {
                  * Be polite: Make sure that we don't send more than 1 request per
                  * second (1000 milliseconds between requests).
                  */
-                config.setPolitenessDelay(1000);
+                config.setPolitenessDelay(300);
 
                 /*
                  * You can set the maximum crawl depth here. The default value is -1 for
@@ -69,7 +71,7 @@ public class BasicCrawlController {
                  * You can set the maximum number of pages to crawl. The default value
                  * is -1 for unlimited number of pages
                  */
-                config.setMaxPagesToFetch(1000);
+                config.setMaxPagesToFetch(-1);
 
                 /*
                  * Do you need to set a proxy? If so, you can use:
@@ -88,9 +90,11 @@ public class BasicCrawlController {
                  * rootFolder manually.
                  */
                 config.setResumableCrawling(false);
-                
+                /*
+                 * THIS USER AGENT STRING
+                 */
                 config.setUserAgentString("UCI IR crawler 86049497 33682168");
-
+                
                 /*
                  * Instantiate the controller for this crawl.
                  */
@@ -104,10 +108,11 @@ public class BasicCrawlController {
                  * URLs that are fetched and then the crawler starts following links
                  * which are found in these pages
                  */
-
+                
                 controller.addSeed("http://www.ics.uci.edu/");
                 controller.addSeed("http://www.ics.uci.edu/~lopes/");
                 controller.addSeed("http://www.ics.uci.edu/~welling/");
+                
 
                 /*
                  * Start the crawl. This is a blocking operation, meaning that your code

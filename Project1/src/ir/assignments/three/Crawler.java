@@ -8,6 +8,7 @@ import edu.uci.ics.crawler4j.crawler.Page;
 import edu.uci.ics.crawler4j.crawler.WebCrawler;
 import edu.uci.ics.crawler4j.parser.HtmlParseData;
 import edu.uci.ics.crawler4j.url.WebURL;
+import edu.uci.ics.crawler4j.util.IO;
 
 public class Crawler extends WebCrawler {
 	 private final static Pattern FILTERS = Pattern.compile(".*(\\.(css|js|bmp|gif|jpe?g" + "|png|tiff?|mid|mp2|mp3|mp4"
@@ -52,6 +53,9 @@ public void visit(Page page) {
              System.out.println("Text length: " + text.length());
              System.out.println("Html length: " + html.length());
              System.out.println("Number of outgoing links: " + links.size());
+             
+             String outputFormat = url + "," + links.size() + "\n";
+             FileOutput.appendBytesToFile(outputFormat.getBytes(), "data/data.cr");
      }
 
      System.out.println("=============");
